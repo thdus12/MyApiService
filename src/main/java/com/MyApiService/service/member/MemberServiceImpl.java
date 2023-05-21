@@ -30,12 +30,13 @@ public class MemberServiceImpl implements MemberService{
     
     @Override
     public MemberResponseDto createUser(MemberRequestDto memberRequestDto) {
-
         // 이메일 중복 확인
         if(memberRepository.findByEmail(memberRequestDto.getEmail()) != null){
             return null;
         }
         
+        log.info("memberRequestDto.getEmail: {}", memberRequestDto.getEmail());
+        log.info("memberRequestDto.getPassword: {}", memberRequestDto.getPassword());
         log.info("Role: {}", Role.MEMBER);
         
         // 가입한 성공한 모든 유저는  "MEMBER" 권한 부여

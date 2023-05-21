@@ -15,14 +15,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 @Configuration
 public class SwaggerConfig {
 	@Bean
-	public GroupedOpenApi jwtApi() {
-		return GroupedOpenApi.builder()
-    		.group("jwt-api")
-    		.pathsToMatch("/**")
-    		.build();
-  	}
-
-	@Bean
 	public OpenAPI customOpenAPI() {
 		Info info = new Info()
 	            .title("MyApiService") // 타이틀

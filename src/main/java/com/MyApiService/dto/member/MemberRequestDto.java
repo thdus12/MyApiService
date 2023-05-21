@@ -12,9 +12,9 @@ import lombok.Setter;
 public class MemberRequestDto {
     @NotNull
     @Email
-    @Schema(description = "User's email address", example = "test@test.com")
+    @Schema(description = "User's email address", example = "test@test.com", required = true)
     private String email;
     @NotNull
-    @Schema(description = "User's password", example = "1234")
+    @Schema(description = "User's password", example = "1234", required = true)
     private String password;
 }

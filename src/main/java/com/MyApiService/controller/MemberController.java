@@ -29,7 +29,7 @@ public class MemberController {
 	@Operation(summary = "회원가입", description = "회원가입 메서드입니다.")
 	@CommonApiResponses
 	@PostMapping("/member/signup")
-	public ResponseEntity<?> createUser(MemberRequestDto memberRequestDto) {
+	public ResponseEntity<?> createUser(@RequestBody MemberRequestDto memberRequestDto) {
 	    MemberResponseDto memberResponseDto = memberService.createUser(memberRequestDto);
 	    if (memberResponseDto == null) {
 	        return commonResponseDataAdvice.createFailureResponse(HttpStatus.BAD_REQUEST, "회원 가입 실패");
