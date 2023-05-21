@@ -1,6 +1,9 @@
 package com.MyApiService.service.member;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import com.MyApiService.dto.member.MemberRequestDto;
 import com.MyApiService.dto.member.MemberResponseDto;
 import com.MyApiService.entity.member.MemberEntity;
 import com.MyApiService.entity.member.MemberRepository;
+import com.MyApiService.jwt.JwtTokenProvider;
 import com.MyApiService.security.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +25,9 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private final AuthenticationManager authenticationManager; 
+    private final JwtTokenProvider jwtTokenProvider; 
+    
     @Override
     public MemberResponseDto createUser(MemberRequestDto memberRequestDto) {
 
@@ -42,7 +48,6 @@ public class MemberServiceImpl implements MemberService{
                         .id(member.getId())
                         .email(member.getEmail())
                         .password(member.getPassword())
-                        .role(member.getRole())
                         .build();
     }
 
@@ -51,6 +56,16 @@ public class MemberServiceImpl implements MemberService{
 		 MemberEntity member = memberRepository.findByEmail(memberRequestDto.getEmail());
         return member;
 	}
+	
+	@Override
+	public String authenticateUser(String email, String password) throws AuthenticationException {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password));
+
+        MemberEntity member = memberRepository.findByEmail(authentication.getName());
+
+        return jwtTokenProvider.generateToken(member.getEmail());
+    }
 
 	public boolean isAdmin(String name) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

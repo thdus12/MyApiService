@@ -19,39 +19,38 @@ import java.io.IOException;
 // JwtAuthenticationFilter: JWT 기반 인증 필터
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtTokenProvider tokenProvider;              // JWT 토큰 관련 처리를 담당하는 클래스
+    private JwtTokenProvider tokenProvider; 			  // JWT 토큰 관련 처리를 담당하는 클래스
     private MemberDetailServiceImpl memberDetailsService; // 사용자 정보를 로드하는 서비스
     private AuthenticationManager authenticationManager;  // 인증 관리자
     private String filterProcessesUrl = "/login/action";
-
-    /**
-     * 생성자: 인증 관리자, JWT 토큰 관리자, 사용자 상세 서비스를 사용
-     */
+    
+    // 생성자: 인증 관리자, JWT 토큰 관리자, 사용자 상세 서비스를 사용
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MemberDetailServiceImpl userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.memberDetailsService = userDetailsService;
     }
-
-    /**
-     * 필터 처리 URL을 설정하는 메서드
-     */
+    
+    // 필터 처리 URL을 설정하는 메서드
     public void setFilterProcessesUrl(String filterProcessesUrl) {
         this.filterProcessesUrl = filterProcessesUrl;
     }
-
-    /**
-     * 필터가 초기화된 후 실행되는 메서드
-     */
+    
+    // 필터가 초기화된 후 실행되는 메서드
+    // 필터 처리 URL을 설정
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
         setFilterProcessesUrl(filterProcessesUrl);
     }
 
-    /**
-     * 실제 필터 처리 로직
-     */
+    // 생성자: JWT 토큰 관리자, 사용자 상세 서비스를 사용
+    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, MemberDetailServiceImpl userDetailsService) {
+        this.tokenProvider = tokenProvider;
+        this.memberDetailsService = userDetailsService;
+    }
+
+    // 실제 필터 처리 로직
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -71,16 +70,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             // 예외 처리
-            System.out.println(e);
+        	System.out.println(e);
         }
 
         // 필터 체인에 요청과 응답 전달
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * 요청에서 JWT 토큰을 가져오는 메서드
-     */
+    // 요청에서 JWT 토큰을 가져오는 메서드
     private String getJwtFromRequest(HttpServletRequest request) {
         // "Authorization" 헤더에서 토큰 가져오기
         String bearerToken = request.getHeader("Authorization");

@@ -14,6 +14,4 @@ public class MemberRequestDto {
     private String email;
     @NotNull
     private String password;
-    @NotNull
-    private String role = "ROLE_MEMBER";
 }

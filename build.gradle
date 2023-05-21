@@ -13,19 +13,34 @@ repositories {
 }
 
 dependencies {
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+	// Swagger
+//	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+	// JWT
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	
+	// Apache Commons Lang
 	implementation 'org.apache.commons:commons-lang3'
+	
+	// Thymeleaf 
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	
+	// Jackson Databind
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+	
+	// Spring Boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	compileOnly 'org.projectlombok:lombok'
+	
+	// MariaDB JDBC
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	// Lombok Annotation Processor: Lombok 어노테이션을 처리하기 위한 Annotation Processor
 	annotationProcessor 'org.projectlombok:lombok'
+	// Spring Boot Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

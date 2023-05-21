@@ -8,4 +8,5 @@ import com.MyApiService.entity.member.MemberEntity;
 public interface MemberService {
 	MemberResponseDto createUser(MemberRequestDto memberFormDto);	
 	MemberEntity getCurrentUser(MemberRequestDto memberFormDto);
+	String authenticateUser(String email, String password);
 }
