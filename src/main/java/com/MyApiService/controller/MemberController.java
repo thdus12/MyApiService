@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.MyApiService.dto.member.MemberResponseDto;
+import com.MyApiService.annotation.CommonApiResponses;
 import com.MyApiService.dto.member.MemberRequestDto ;
 import com.MyApiService.service.member.MemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Auth", description = "인증 관련 api")
@@ -22,26 +24,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberController {
 	private final MemberService memberService;
+	private final CommonResponseDataAdvice commonResponseDataAdvice;
 	
 	@Operation(summary = "회원가입", description = "회원가입 메서드입니다.")
+	@CommonApiResponses
 	@PostMapping("/member/signup")
 	public ResponseEntity<?> createUser(MemberRequestDto memberRequestDto) {
-		MemberResponseDto memberResponseDto  = memberService.createUser(memberRequestDto);
-	    if(memberResponseDto == null){
-	        return new ResponseEntity<>("Failed to sign up", HttpStatus.BAD_REQUEST);
-	    }else{
-	        return new ResponseEntity<>(memberResponseDto, HttpStatus.CREATED);
+	    MemberResponseDto memberResponseDto = memberService.createUser(memberRequestDto);
+	    if (memberResponseDto == null) {
+	        return commonResponseDataAdvice.createFailureResponse(HttpStatus.BAD_REQUEST, "회원 가입 실패");
+	    } else {
+	    	return commonResponseDataAdvice.createSuccessResponse(HttpStatus.CREATED, "회원 가입 성공");
 	    }
 	}
 	
 	@Operation(summary = "로그인", description = "로그인 메서드입니다.")
+	@CommonApiResponses
 	@PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody MemberRequestDto memberRequestDto) {
-        try {
-            String token = memberService.authenticateUser(memberRequestDto.getEmail(), memberRequestDto.getPassword());
-            return ResponseEntity.ok().body("Bearer " + token);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.badRequest().body("Invalid username or password");
-        }
-    }
+	public ResponseEntity<?> authenticateUser(@RequestBody MemberRequestDto memberRequestDto) {
+	    try {
+	        String token = memberService.authenticateUser(memberRequestDto.getEmail(), memberRequestDto.getPassword());
+	        System.out.println("@@@@token="+token);
+	        return commonResponseDataAdvice.createSuccessResponse(HttpStatus.OK, "로그인 성공");
+	    } catch (AuthenticationException e) {
+	        return commonResponseDataAdvice.createFailureResponse(HttpStatus.BAD_REQUEST, "로그인 실패");
+	    }
+	}
 }
