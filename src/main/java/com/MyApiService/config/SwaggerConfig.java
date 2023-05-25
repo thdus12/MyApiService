@@ -19,7 +19,7 @@ public class SwaggerConfig {
 		Info info = new Info()
 	            .title("MyApiService") // 타이틀
 	            .version("v0.0.1") // 문서 버전
-	            .description("API 문서입니다."); // 문서 설명
+	            .description("로그인, 회원가입 API 문서입니다."); // 문서 설명
 //	            .contact(new Contact() // 연락처
 //	            	.name("BAE SOYEON")
 //	                .email("bthdus5890@gmail.com"));
