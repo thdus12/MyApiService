@@ -16,45 +16,57 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// JwtAuthenticationFilter: JWT 기반 인증 필터
+/**
+ * JWT 기반 인증 필터인 JwtAuthenticationFilter 클래스입니다.
+ * OncePerRequestFilter를 상속하여 한 번의 요청당 한 번의 필터링을 수행합니다.
+ * JWT 토큰을 처리하고 사용자 인증을 수행합니다.
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtTokenProvider tokenProvider; 			  // JWT 토큰 관련 처리를 담당하는 클래스
+    private JwtTokenProvider tokenProvider; // JWT 토큰 관리를 담당하는 클래스
     private MemberDetailServiceImpl memberDetailsService; // 사용자 정보를 로드하는 서비스
-    private AuthenticationManager authenticationManager;  // 인증 관리자
+    private AuthenticationManager authenticationManager; // 인증 관리자
     private String filterProcessesUrl = "/login/action";
-    
-    // 생성자: 인증 관리자, JWT 토큰 관리자, 사용자 상세 서비스를 사용
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MemberDetailServiceImpl userDetailsService) {
+
+    /**
+     * JwtAuthenticationFilter의 생성자입니다.
+     * 인증 관리자, JWT 토큰 관리자, 사용자 상세 서비스를 주입받습니다.
+     * @param authenticationManager 인증 관리자
+     * @param tokenProvider JWT 토큰 관리자
+     * @param memberDetailsService 사용자 상세 서비스
+     */
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MemberDetailServiceImpl memberDetailsService) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
-        this.memberDetailsService = userDetailsService;
+        this.memberDetailsService = memberDetailsService;
     }
-    
-    // 필터 처리 URL을 설정하는 메서드
+
+    /**
+     * 필터 처리 URL을 설정하는 메서드입니다.
+     * @param filterProcessesUrl 필터 처리 URL
+     */
     public void setFilterProcessesUrl(String filterProcessesUrl) {
         this.filterProcessesUrl = filterProcessesUrl;
     }
-    
-    // 필터가 초기화된 후 실행되는 메서드
-    // 필터 처리 URL을 설정
+
+    /**
+     * 필터가 초기화된 후 실행되는 메서드입니다.
+     * 필터 처리 URL을 설정합니다.
+     */
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
         setFilterProcessesUrl(filterProcessesUrl);
     }
 
-    // 생성자: JWT 토큰 관리자, 사용자 상세 서비스를 사용
-    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, MemberDetailServiceImpl userDetailsService) {
-        this.tokenProvider = tokenProvider;
-        this.memberDetailsService = userDetailsService;
-    }
-
-    // 실제 필터 처리 로직
+    /**
+     * 실제 필터 처리 로직을 담고 있는 메서드입니다.
+     * JWT 토큰을 확인하고 사용자 인증을 수행합니다.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            // JWT 토큰을 요청에서 가져오기
+            // 요청에서 JWT 토큰 가져오기
             String jwt = getJwtFromRequest(request);
 
             // JWT 토큰이 유효한 경우
@@ -70,14 +82,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             // 예외 처리
-        	System.out.println(e);
+            System.out.println(e);
         }
 
         // 필터 체인에 요청과 응답 전달
         filterChain.doFilter(request, response);
     }
 
-    // 요청에서 JWT 토큰을 가져오는 메서드
+    /**
+     * 요청에서 JWT 토큰을 가져오는 메서드입니다.
+     * "Authorization" 헤더에서 토큰을 가져옵니다.
+     */
     private String getJwtFromRequest(HttpServletRequest request) {
         // "Authorization" 헤더에서 토큰 가져오기
         String bearerToken = request.getHeader("Authorization");
