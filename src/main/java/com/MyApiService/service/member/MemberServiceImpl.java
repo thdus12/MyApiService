@@ -1,5 +1,7 @@
 package com.MyApiService.service.member;
 
+import java.time.LocalDateTime;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,18 +62,6 @@ public class MemberServiceImpl implements MemberService {
                         .password(member.getPassword())
                         .build();
     }
-
-    /**
-     * 현재 사용자 조회 메서드
-     * 주어진 회원 정보를 바탕으로 현재 사용자를 조회하여 MemberEntity 형태로 반환
-     * @param memberRequestDto 현재 사용자 조회에 필요한 회원 정보를 담고 있는 MemberRequestDto 객체
-     * @return 현재 사용자의 정보를 담고 있는 MemberEntity 객체
-     */
-	@Override
-	public MemberEntity getCurrentUser(MemberRequestDto memberRequestDto) {
-		 MemberEntity member = memberRepository.findByEmail(memberRequestDto.getEmail());
-        return member;
-	}
 	
 	/**
 	 * 사용자 인증 메서드
@@ -87,33 +77,9 @@ public class MemberServiceImpl implements MemberService {
                 new UsernamePasswordAuthenticationToken(email, password));
 
         MemberEntity member = memberRepository.findByEmail(authentication.getName());
+        
+        memberRepository.updateMemberLastLogin(email, LocalDateTime.now());
 
         return jwtTokenProvider.generateToken(member.getEmail());
     }
-
-	/**
-	 * 관리자 권한 확인 메서드
-	 * 주어진 이름을 가진 사용자가 관리자인지 확인하여 true 또는 false를 반환
-	 * @param name 사용자 이름
-	 * @return 관리자인 경우 true, 그렇지 않은 경우 false
-	 */
-	public boolean isAdmin(String name) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof MemberEntity) {
-        	MemberEntity memberEntity = (MemberEntity) authentication.getPrincipal();
-            return memberEntity.getAuthorities().stream()
-                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-        }
-        return false;
-	}
-
-	/**
-	 * 이메일을 기반으로 사용자 조회 메서드
-	 * 주어진 사용자 이메일을 바탕으로 MemberEntity를 조회하여 반환
-	 * @param memberId 사용자 이메일
-	 * @return 사용자 정보를 담고 있는 MemberEntity 객체
-	 */
-	public MemberEntity getMemberByEmail(String memberId) {
-		return memberRepository.findByEmail(memberId);
-	}
 }

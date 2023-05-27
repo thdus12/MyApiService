@@ -19,13 +19,6 @@ public interface MemberService {
     MemberResponseDto createUser(MemberRequestDto memberFormDto);
     
     /**
-     * 주어진 회원 정보를 바탕으로 현재 사용자를 조회하는 메서드
-     * @param memberFormDto 현재 사용자 조회에 필요한 정보를 담고 있는 MemberRequestDto 객체
-     * @return 현재 사용자의 정보를 담고 있는 MemberEntity 객체
-     */
-    MemberEntity getCurrentUser(MemberRequestDto memberFormDto);
-    
-    /**
      * 주어진 이메일과 비밀번호를 바탕으로 사용자를 인증하는 메서드
      * @param email 사용자 이메일
      * @param password 사용자 비밀번호
